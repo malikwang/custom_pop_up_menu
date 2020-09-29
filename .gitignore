@@ -1,0 +1,11 @@
+!example/ios/Flutter/Flutter.podspec
+!example/ios/Flutter/Debug.xcconfig
+!example/ios/Flutter/Release.xcconfig
+!example/ios/Flutter/AppFrameworkInfo.plist
+
+example/.dart_tool/
+example/.idea/
+example/*.lock
+example/build/
+example/.packages
+example/ios/Flutter/
