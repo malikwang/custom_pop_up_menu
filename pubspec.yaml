@@ -1,0 +1,17 @@
+name: custom_pop_up_menu
+description: Wrap a widget with CustomPopupMenu, Tap or Long Press this widget, a popup menu would show in a position.
+repository: https://github.com/malikwang/custom_pop_up_menu
+homepage: https://github.com/malikwang/custom_pop_up_menu
+
+version: 1.0.0
+
+environment:
+  sdk: ">=2.7.0 <3.0.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
