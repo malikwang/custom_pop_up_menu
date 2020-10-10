@@ -1,3 +1,7 @@
+## 1.0.2
+
+* Fix overlay exception.
+
 ## 1.0.1+1
 
 * Update doc.

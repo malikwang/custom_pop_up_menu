@@ -133,7 +133,8 @@ class _CustomPopupMenuState extends State<CustomPopupMenu> {
 
   _hideMenu() {
     if (_overlayEntry != null) {
-      _overlayEntry?.remove();
+      _overlayEntry.remove();
+      _overlayEntry = null;
     }
   }
 
