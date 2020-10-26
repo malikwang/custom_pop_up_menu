@@ -9,3 +9,8 @@ example/*.lock
 example/build/
 example/.packages
 example/ios/Flutter/
+example/android/.gradle/
+.idea/
+example/android/gradlew
+example/android/gradlew.bat
+example/android/gradle/wrapper/gradle-wrapper.jar

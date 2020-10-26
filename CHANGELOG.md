@@ -1,3 +1,7 @@
+## 1.1.0
+
+* Fix swipe back issue on IOS.
+
 ## 1.0.2
 
 * Fix overlay exception.
