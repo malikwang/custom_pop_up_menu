@@ -168,9 +168,9 @@ class _CustomPopupMenuState extends State<CustomPopupMenu> {
 
   @override
   Widget build(BuildContext context) {
-    var child = TextButton(
+    var child = InkWell(
       child: widget.child,
-      onPressed: () {
+      onTap: () {
         if (widget.pressType == PressType.singleClick) {
           _showMenu();
         }
