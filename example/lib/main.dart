@@ -80,7 +80,7 @@ class _MyHomePageState extends State<MyHomePage> {
         actions: <Widget>[
           CustomPopupMenu(
             child: Container(
-              child: Icon(Icons.add_circle_outline),
+              child: Icon(Icons.add_circle_outline, color: Colors.white),
               padding: EdgeInsets.all(20),
             ),
             menuBuilder: () => ClipRRect(
