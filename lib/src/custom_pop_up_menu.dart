@@ -168,10 +168,9 @@ class _CustomPopupMenuState extends State<CustomPopupMenu> {
 
   @override
   Widget build(BuildContext context) {
-    var child = GestureDetector(
-      behavior: HitTestBehavior.translucent,
+    var child = TextButton(
       child: widget.child,
-      onTap: () {
+      onPressed: () {
         if (widget.pressType == PressType.singleClick) {
           _showMenu();
         }
