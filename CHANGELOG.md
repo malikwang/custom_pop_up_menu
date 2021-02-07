@@ -1,3 +1,7 @@
+## 1.1.1
+
+* Support for Windows.
+
 ## 1.1.0
 
 * Fix swipe back issue on IOS.
