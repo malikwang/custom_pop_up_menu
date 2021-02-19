@@ -1,23 +1,27 @@
+## 1.1.2
+
+- Support for Web.
+
 ## 1.1.1
 
-* Support for Windows.
+- Support for Windows.
 
 ## 1.1.0
 
-* Fix swipe back issue on IOS.
+- Fix swipe back issue on IOS.
 
 ## 1.0.2
 
-* Fix overlay exception.
+- Fix overlay exception.
 
 ## 1.0.1+1
 
-* Update doc.
+- Update doc.
 
 ## 1.0.1
 
-* Fix overlay exception.
+- Fix overlay exception.
 
 ## 1.0.0
 
-* Initial open source release.
+- Initial open source release.

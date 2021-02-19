@@ -1,7 +1,7 @@
 import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
-import 'dart:io';
+import 'platform/platform.dart';
 
 enum PressType {
   longPress,
