@@ -1,3 +1,3 @@
 class Platform {
-  bool get isIOS => false;
+  static final bool isIOS = false;
 }
