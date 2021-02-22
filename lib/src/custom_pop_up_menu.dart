@@ -168,22 +168,25 @@ class _CustomPopupMenuState extends State<CustomPopupMenu> {
 
   @override
   Widget build(BuildContext context) {
-    var child = InkWell(
-      hoverColor: Colors.transparent,
-      focusColor: Colors.transparent,
-      splashColor: Colors.transparent,
-      highlightColor: Colors.transparent,
-      child: widget.child,
-      onTap: () {
-        if (widget.pressType == PressType.singleClick) {
-          _showMenu();
-        }
-      },
-      onLongPress: () {
-        if (widget.pressType == PressType.longPress) {
-          _showMenu();
-        }
-      },
+    var child = Material(
+      child: InkWell(
+        hoverColor: Colors.transparent,
+        focusColor: Colors.transparent,
+        splashColor: Colors.transparent,
+        highlightColor: Colors.transparent,
+        child: widget.child,
+        onTap: () {
+          if (widget.pressType == PressType.singleClick) {
+            _showMenu();
+          }
+        },
+        onLongPress: () {
+          if (widget.pressType == PressType.longPress) {
+            _showMenu();
+          }
+        },
+      ),
+      color: Colors.transparent,
     );
     if (Platform.isIOS) {
       return child;
