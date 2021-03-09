@@ -1,3 +1,7 @@
+## 1.2.0
+
+- Null-safe release.
+
 ## 1.1.2
 
 - Support for Web.
