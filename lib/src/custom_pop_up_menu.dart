@@ -29,9 +29,9 @@ class CustomPopupMenuController extends ChangeNotifier {
 
 class CustomPopupMenu extends StatefulWidget {
   CustomPopupMenu({
-    @required this.child,
-    @required this.menuBuilder,
-    @required this.pressType,
+    required this.child,
+    required this.menuBuilder,
+    required this.pressType,
     this.controller,
     this.arrowColor = const Color(0xFF4C4C4C),
     this.showArrow = true,
@@ -39,7 +39,7 @@ class CustomPopupMenu extends StatefulWidget {
     this.arrowSize = 10.0,
     this.horizontalMargin = 10.0,
     this.verticalMargin = 10.0,
-  }) : assert(menuBuilder != null);
+  });
 
   final Widget child;
   final PressType pressType;
@@ -49,17 +49,17 @@ class CustomPopupMenu extends StatefulWidget {
   final double horizontalMargin;
   final double verticalMargin;
   final double arrowSize;
-  final CustomPopupMenuController controller;
+  final CustomPopupMenuController? controller;
   final Widget Function() menuBuilder;
   @override
   _CustomPopupMenuState createState() => _CustomPopupMenuState();
 }
 
 class _CustomPopupMenuState extends State<CustomPopupMenu> {
-  RenderBox _childBox;
-  RenderBox _parentBox;
-  OverlayEntry _overlayEntry;
-  CustomPopupMenuController _controller;
+  RenderBox? _childBox;
+  RenderBox? _parentBox;
+  OverlayEntry? _overlayEntry;
+  CustomPopupMenuController? _controller;
 
   _showMenu() {
     Widget arrow = ClipPath(
@@ -84,13 +84,14 @@ class _CustomPopupMenuState extends State<CustomPopupMenu> {
             Center(
               child: Container(
                 constraints: BoxConstraints(
-                  maxWidth: _parentBox.size.width - 2 * widget.horizontalMargin,
+                  maxWidth:
+                      _parentBox!.size.width - 2 * widget.horizontalMargin,
                   minWidth: 0,
                 ),
                 child: CustomMultiChildLayout(
                   delegate: _MenuLayoutDelegate(
-                    anchorSize: _childBox.size,
-                    anchorOffset: _childBox.localToGlobal(
+                    anchorSize: _childBox!.size,
+                    anchorOffset: _childBox!.localToGlobal(
                       Offset(-widget.horizontalMargin, 0),
                     ),
                     verticalMargin: widget.verticalMargin,
@@ -129,18 +130,20 @@ class _CustomPopupMenuState extends State<CustomPopupMenu> {
         );
       },
     );
-    Overlay.of(context).insert(_overlayEntry);
+    if (_overlayEntry != null) {
+      Overlay.of(context)!.insert(_overlayEntry!);
+    }
   }
 
   _hideMenu() {
     if (_overlayEntry != null) {
-      _overlayEntry.remove();
+      _overlayEntry?.remove();
       _overlayEntry = null;
     }
   }
 
   _updateView() {
-    if (_controller.menuIsShowing) {
+    if (_controller?.menuIsShowing ?? false) {
       _showMenu();
     } else {
       _hideMenu();
@@ -152,17 +155,18 @@ class _CustomPopupMenuState extends State<CustomPopupMenu> {
     super.initState();
     _controller = widget.controller;
     if (_controller == null) _controller = CustomPopupMenuController();
-    _controller.addListener(_updateView);
-    WidgetsBinding.instance.addPostFrameCallback((call) {
-      _childBox = context.findRenderObject();
-      _parentBox = Overlay.of(context).context.findRenderObject();
+    _controller?.addListener(_updateView);
+    WidgetsBinding.instance?.addPostFrameCallback((call) {
+      _childBox = context.findRenderObject() as RenderBox?;
+      _parentBox =
+          Overlay.of(context)!.context.findRenderObject() as RenderBox?;
     });
   }
 
   @override
   void dispose() {
     _hideMenu();
-    _controller.removeListener(_updateView);
+    _controller?.removeListener(_updateView);
     super.dispose();
   }
 
@@ -219,9 +223,9 @@ enum _MenuPosition {
 
 class _MenuLayoutDelegate extends MultiChildLayoutDelegate {
   _MenuLayoutDelegate({
-    this.anchorSize,
-    this.anchorOffset,
-    this.verticalMargin,
+    required this.anchorSize,
+    required this.anchorOffset,
+    required this.verticalMargin,
   });
 
   final Size anchorSize;
