@@ -38,8 +38,8 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  List<ChatModel> messages;
-  List<ItemModel> menuItems;
+  late List<ChatModel> messages;
+  late List<ItemModel> menuItems;
   CustomPopupMenuController _controller = CustomPopupMenuController();
 
   @override
