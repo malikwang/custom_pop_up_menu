@@ -244,6 +244,7 @@ class MessageContent extends StatelessWidget {
               barrierColor: Colors.transparent,
               pressType: PressType.longPress,
               arrowColor: isMe ? Colors.blueAccent : Colors.pinkAccent,
+              position: PreferredPosition.top,
             ),
           ),
           CustomPopupMenu(

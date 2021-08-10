@@ -8,6 +8,11 @@ enum PressType {
   singleClick,
 }
 
+enum PreferredPosition {
+  top,
+  bottom,
+}
+
 class CustomPopupMenuController extends ChangeNotifier {
   bool menuIsShowing = false;
 
@@ -39,6 +44,7 @@ class CustomPopupMenu extends StatefulWidget {
     this.arrowSize = 10.0,
     this.horizontalMargin = 10.0,
     this.verticalMargin = 10.0,
+    this.position,
   });
 
   final Widget child;
@@ -51,6 +57,8 @@ class CustomPopupMenu extends StatefulWidget {
   final double arrowSize;
   final CustomPopupMenuController? controller;
   final Widget Function() menuBuilder;
+  final PreferredPosition? position;
+
   @override
   _CustomPopupMenuState createState() => _CustomPopupMenuState();
 }
@@ -95,6 +103,7 @@ class _CustomPopupMenuState extends State<CustomPopupMenu> {
                       Offset(-widget.horizontalMargin, 0),
                     ),
                     verticalMargin: widget.verticalMargin,
+                    position: widget.position,
                   ),
                   children: <Widget>[
                     if (widget.showArrow)
@@ -157,9 +166,11 @@ class _CustomPopupMenuState extends State<CustomPopupMenu> {
     if (_controller == null) _controller = CustomPopupMenuController();
     _controller?.addListener(_updateView);
     WidgetsBinding.instance?.addPostFrameCallback((call) {
-      _childBox = context.findRenderObject() as RenderBox?;
-      _parentBox =
-          Overlay.of(context)!.context.findRenderObject() as RenderBox?;
+      if (mounted) {
+        _childBox = context.findRenderObject() as RenderBox?;
+        _parentBox =
+            Overlay.of(context)?.context.findRenderObject() as RenderBox?;
+      }
     });
   }
 
@@ -226,11 +237,14 @@ class _MenuLayoutDelegate extends MultiChildLayoutDelegate {
     required this.anchorSize,
     required this.anchorOffset,
     required this.verticalMargin,
+    this.position,
   });
 
   final Size anchorSize;
   final Offset anchorOffset;
   final double verticalMargin;
+  final PreferredPosition? position;
+
   @override
   void performLayout(Size size) {
     Size contentSize = Size.zero;
@@ -263,9 +277,11 @@ class _MenuLayoutDelegate extends MultiChildLayoutDelegate {
     }
 
     bool isTop = false;
-    if (anchorBottomY + verticalMargin + arrowSize.height + contentSize.height >
-        size.height) {
-      isTop = true;
+    if (position == null) {
+      // auto calculate position
+      isTop = anchorBottomY > size.height / 2;
+    } else {
+      isTop = position == PreferredPosition.top;
     }
     if (anchorCenterX - contentSize.width / 2 < 0) {
       menuPosition = isTop ? _MenuPosition.topLeft : _MenuPosition.bottomLeft;

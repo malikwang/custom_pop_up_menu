@@ -1,3 +1,8 @@
+## 1.2.1
+
+- Fix null error.
+- Add preferred position.
+
 ## 1.2.0
 
 - Null-safe release.
