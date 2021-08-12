@@ -45,6 +45,7 @@ class CustomPopupMenu extends StatefulWidget {
     this.horizontalMargin = 10.0,
     this.verticalMargin = 10.0,
     this.position,
+    this.menuOnChange,
   });
 
   final Widget child;
@@ -58,6 +59,7 @@ class CustomPopupMenu extends StatefulWidget {
   final CustomPopupMenuController? controller;
   final Widget Function() menuBuilder;
   final PreferredPosition? position;
+  final void Function(bool)? menuOnChange;
 
   @override
   _CustomPopupMenuState createState() => _CustomPopupMenuState();
@@ -84,7 +86,9 @@ class _CustomPopupMenuState extends State<CustomPopupMenu> {
         return Stack(
           children: <Widget>[
             GestureDetector(
-              onTap: () => _hideMenu(),
+              onTap: () {
+                _controller?.hideMenu();
+              },
               child: Container(
                 color: widget.barrierColor,
               ),
@@ -152,7 +156,9 @@ class _CustomPopupMenuState extends State<CustomPopupMenu> {
   }
 
   _updateView() {
-    if (_controller?.menuIsShowing ?? false) {
+    bool menuIsShowing = _controller?.menuIsShowing ?? false;
+    widget.menuOnChange?.call(menuIsShowing);
+    if (menuIsShowing) {
       _showMenu();
     } else {
       _hideMenu();
@@ -192,12 +198,12 @@ class _CustomPopupMenuState extends State<CustomPopupMenu> {
         child: widget.child,
         onTap: () {
           if (widget.pressType == PressType.singleClick) {
-            _showMenu();
+            _controller?.showMenu();
           }
         },
         onLongPress: () {
           if (widget.pressType == PressType.longPress) {
-            _showMenu();
+            _controller?.showMenu();
           }
         },
       ),

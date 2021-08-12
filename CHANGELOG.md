@@ -1,3 +1,7 @@
+## 1.2.2
+
+- Notify the menu showing.
+
 ## 1.2.1
 
 - Fix null error.
