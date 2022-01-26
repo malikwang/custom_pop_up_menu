@@ -46,6 +46,7 @@ class CustomPopupMenu extends StatefulWidget {
     this.verticalMargin = 10.0,
     this.position,
     this.menuOnChange,
+    this.enablePassEvent = true,
   });
 
   final Widget child;
@@ -61,6 +62,10 @@ class CustomPopupMenu extends StatefulWidget {
   final PreferredPosition? position;
   final void Function(bool)? menuOnChange;
 
+  /// Pass tap event to the widgets below the mask.
+  /// It only works when [barrierColor] is transparent.
+  final bool enablePassEvent;
+
   @override
   _CustomPopupMenuState createState() => _CustomPopupMenuState();
 }
@@ -70,6 +75,7 @@ class _CustomPopupMenuState extends State<CustomPopupMenu> {
   RenderBox? _parentBox;
   OverlayEntry? _overlayEntry;
   CustomPopupMenuController? _controller;
+  bool _canResponse = true;
 
   _showMenu() {
     Widget arrow = ClipPath(
@@ -83,63 +89,70 @@ class _CustomPopupMenuState extends State<CustomPopupMenu> {
 
     _overlayEntry = OverlayEntry(
       builder: (context) {
-        return Stack(
-          children: <Widget>[
-            GestureDetector(
-              onTap: () {
-                _controller?.hideMenu();
-              },
-              child: Container(
-                color: widget.barrierColor,
-              ),
+        Widget menu = Center(
+          child: Container(
+            constraints: BoxConstraints(
+              maxWidth: _parentBox!.size.width - 2 * widget.horizontalMargin,
+              minWidth: 0,
             ),
-            Center(
-              child: Container(
-                constraints: BoxConstraints(
-                  maxWidth:
-                      _parentBox!.size.width - 2 * widget.horizontalMargin,
-                  minWidth: 0,
+            child: CustomMultiChildLayout(
+              delegate: _MenuLayoutDelegate(
+                anchorSize: _childBox!.size,
+                anchorOffset: _childBox!.localToGlobal(
+                  Offset(-widget.horizontalMargin, 0),
                 ),
-                child: CustomMultiChildLayout(
-                  delegate: _MenuLayoutDelegate(
-                    anchorSize: _childBox!.size,
-                    anchorOffset: _childBox!.localToGlobal(
-                      Offset(-widget.horizontalMargin, 0),
-                    ),
-                    verticalMargin: widget.verticalMargin,
-                    position: widget.position,
+                verticalMargin: widget.verticalMargin,
+                position: widget.position,
+              ),
+              children: <Widget>[
+                if (widget.showArrow)
+                  LayoutId(
+                    id: _MenuLayoutId.arrow,
+                    child: arrow,
                   ),
-                  children: <Widget>[
-                    if (widget.showArrow)
-                      LayoutId(
-                        id: _MenuLayoutId.arrow,
-                        child: arrow,
-                      ),
-                    if (widget.showArrow)
-                      LayoutId(
-                        id: _MenuLayoutId.downArrow,
-                        child: Transform.rotate(
-                          angle: math.pi,
-                          child: arrow,
-                        ),
-                      ),
-                    LayoutId(
-                      id: _MenuLayoutId.content,
-                      child: Column(
-                        mainAxisSize: MainAxisSize.min,
-                        children: <Widget>[
-                          Material(
-                            child: widget.menuBuilder(),
-                            color: Colors.transparent,
-                          ),
-                        ],
-                      ),
+                if (widget.showArrow)
+                  LayoutId(
+                    id: _MenuLayoutId.downArrow,
+                    child: Transform.rotate(
+                      angle: math.pi,
+                      child: arrow,
                     ),
-                  ],
+                  ),
+                LayoutId(
+                  id: _MenuLayoutId.content,
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: <Widget>[
+                      Material(
+                        child: widget.menuBuilder(),
+                        color: Colors.transparent,
+                      ),
+                    ],
+                  ),
                 ),
-              ),
+              ],
             ),
-          ],
+          ),
+        );
+        return Listener(
+          behavior: widget.enablePassEvent
+              ? HitTestBehavior.translucent
+              : HitTestBehavior.opaque,
+          onPointerDown: (PointerDownEvent event) {
+            _controller?.hideMenu();
+            // When [enablePassEvent] works and we tap the [child] to [hideMenu],
+            // but the passed event would trigger [showMenu] again.
+            // So, we use time threshold to solve this bug.
+            _canResponse = false;
+            Future.delayed(Duration(milliseconds: 300))
+                .then((_) => _canResponse = true);
+          },
+          child: widget.barrierColor == Colors.transparent
+              ? menu
+              : Container(
+                  color: widget.barrierColor,
+                  child: menu,
+                ),
         );
       },
     );
@@ -197,12 +210,12 @@ class _CustomPopupMenuState extends State<CustomPopupMenu> {
         highlightColor: Colors.transparent,
         child: widget.child,
         onTap: () {
-          if (widget.pressType == PressType.singleClick) {
+          if (widget.pressType == PressType.singleClick && _canResponse) {
             _controller?.showMenu();
           }
         },
         onLongPress: () {
-          if (widget.pressType == PressType.longPress) {
+          if (widget.pressType == PressType.longPress && _canResponse) {
             _controller?.showMenu();
           }
         },

@@ -1,3 +1,7 @@
+## 1.2.3
+
+- Add [enablePassEvent] to pass tap event.
+
 ## 1.2.2
 
 - Notify the menu showing.
