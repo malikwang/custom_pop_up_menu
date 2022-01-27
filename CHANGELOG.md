@@ -1,3 +1,8 @@
+## 1.2.3+1
+
+- Fix bug when tap at menu.
+
+
 ## 1.2.3
 
 - Add [enablePassEvent] to pass tap event.
