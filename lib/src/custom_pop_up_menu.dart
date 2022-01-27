@@ -32,6 +32,8 @@ class CustomPopupMenuController extends ChangeNotifier {
   }
 }
 
+Rect _menuRect = Rect.zero;
+
 class CustomPopupMenu extends StatefulWidget {
   CustomPopupMenu({
     required this.child,
@@ -139,6 +141,12 @@ class _CustomPopupMenuState extends State<CustomPopupMenu> {
               ? HitTestBehavior.translucent
               : HitTestBehavior.opaque,
           onPointerDown: (PointerDownEvent event) {
+            Offset offset = event.localPosition;
+            // If tap position in menu
+            if (_menuRect.contains(
+                Offset(offset.dx - widget.horizontalMargin, offset.dy))) {
+              return;
+            }
             _controller?.hideMenu();
             // When [enablePassEvent] works and we tap the [child] to [hideMenu],
             // but the passed event would trigger [showMenu] again.
@@ -372,6 +380,13 @@ class _MenuLayoutDelegate extends MultiChildLayoutDelegate {
     if (hasChild(_MenuLayoutId.content)) {
       positionChild(_MenuLayoutId.content, contentOffset);
     }
+
+    _menuRect = Rect.fromLTWH(
+      contentOffset.dx,
+      contentOffset.dy,
+      contentSize.width,
+      contentSize.height,
+    );
     bool isBottom = false;
     if (_MenuPosition.values.indexOf(menuPosition) < 3) {
       // bottom
