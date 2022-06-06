@@ -3,10 +3,10 @@ description: Wrap a widget with CustomPopupMenu, Tap or Long Press this widget, 
 repository: https://github.com/malikwang/custom_pop_up_menu
 homepage: https://github.com/malikwang/custom_pop_up_menu
 
-version: 1.2.3+1
+version: 1.2.4
 
 environment:
-  sdk: ">=2.12.0 <3.0.0"
+  sdk: ">=2.17.0 <3.0.0"
 
 dependencies:
   flutter:
