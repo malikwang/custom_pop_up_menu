@@ -81,14 +81,19 @@ class _MyHomePageState extends State<MyHomePage> {
         title: Text('CustomPopupMenu'),
         actions: <Widget>[
           CustomPopupMenu(
+            arrowColor: Colors.white,
+            arrowSize: 20,
             child: Container(
               child: Icon(Icons.add_circle_outline, color: Colors.white),
               padding: EdgeInsets.all(20),
             ),
             menuBuilder: () => ClipRRect(
-              borderRadius: BorderRadius.circular(5),
               child: Container(
-                color: const Color(0xFF4C4C4C),
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  border: Border.all(),
+                  borderRadius: BorderRadius.circular(5),
+                ),
                 child: IntrinsicWidth(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -108,7 +113,6 @@ class _MyHomePageState extends State<MyHomePage> {
                                   Icon(
                                     item.icon,
                                     size: 15,
-                                    color: Colors.white,
                                   ),
                                   Expanded(
                                     child: Container(
@@ -118,7 +122,6 @@ class _MyHomePageState extends State<MyHomePage> {
                                       child: Text(
                                         item.title,
                                         style: TextStyle(
-                                          color: Colors.white,
                                           fontSize: 12,
                                         ),
                                       ),
