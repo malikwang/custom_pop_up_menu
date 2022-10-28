@@ -49,6 +49,7 @@ class CustomPopupMenu extends StatefulWidget {
     this.position,
     this.menuOnChange,
     this.enablePassEvent = true,
+    this.arrowBorder,
   });
 
   final Widget child;
@@ -63,6 +64,7 @@ class CustomPopupMenu extends StatefulWidget {
   final Widget Function() menuBuilder;
   final PreferredPosition? position;
   final void Function(bool)? menuOnChange;
+  final BorderSide? arrowBorder;
 
   /// Pass tap event to the widgets below the mask.
   /// It only works when [barrierColor] is transparent.
@@ -85,6 +87,11 @@ class _CustomPopupMenuState extends State<CustomPopupMenu> {
         width: widget.arrowSize,
         height: widget.arrowSize,
         color: widget.arrowColor,
+        child: CustomPaint(
+          painter: ClipperBorderPainter(
+            border: widget.arrowBorder,
+          ),
+        ),
       ),
       clipper: _ArrowClipper(),
     );
@@ -101,12 +108,24 @@ class _CustomPopupMenuState extends State<CustomPopupMenu> {
               delegate: _MenuLayoutDelegate(
                 anchorSize: _childBox!.size,
                 anchorOffset: _childBox!.localToGlobal(
-                  Offset(-widget.horizontalMargin, 0),
+                  Offset(-widget.horizontalMargin, -10),
                 ),
                 verticalMargin: widget.verticalMargin,
                 position: widget.position,
               ),
               children: <Widget>[
+                LayoutId(
+                  id: _MenuLayoutId.content,
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: <Widget>[
+                      Material(
+                        child: widget.menuBuilder(),
+                        color: Colors.transparent,
+                      ),
+                    ],
+                  ),
+                ),
                 if (widget.showArrow)
                   LayoutId(
                     id: _MenuLayoutId.arrow,
@@ -120,18 +139,6 @@ class _CustomPopupMenuState extends State<CustomPopupMenu> {
                       child: arrow,
                     ),
                   ),
-                LayoutId(
-                  id: _MenuLayoutId.content,
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: <Widget>[
-                      Material(
-                        child: widget.menuBuilder(),
-                        color: Colors.transparent,
-                      ),
-                    ],
-                  ),
-                ),
               ],
             ),
           ),
@@ -318,7 +325,7 @@ class _MenuLayoutDelegate extends MultiChildLayoutDelegate {
       menuPosition =
           isTop ? _MenuPosition.topCenter : _MenuPosition.bottomCenter;
     }
-
+    print(menuPosition);
     switch (menuPosition) {
       case _MenuPosition.bottomCenter:
         arrowOffset = Offset(
@@ -396,7 +403,7 @@ class _MenuLayoutDelegate extends MultiChildLayoutDelegate {
       positionChild(
         _MenuLayoutId.arrow,
         isBottom
-            ? Offset(arrowOffset.dx, arrowOffset.dy + 0.1)
+            ? Offset(arrowOffset.dx, arrowOffset.dy + 1.1)
             : Offset(-100, 0),
       );
     }
@@ -404,7 +411,7 @@ class _MenuLayoutDelegate extends MultiChildLayoutDelegate {
       positionChild(
         _MenuLayoutId.downArrow,
         !isBottom
-            ? Offset(arrowOffset.dx, arrowOffset.dy - 0.1)
+            ? Offset(arrowOffset.dx, arrowOffset.dy - 1.1)
             : Offset(-100, 0),
       );
     }
@@ -426,6 +433,34 @@ class _ArrowClipper extends CustomClipper<Path> {
 
   @override
   bool shouldReclip(CustomClipper<Path> oldClipper) {
+    return true;
+  }
+}
+
+class ClipperBorderPainter extends CustomPainter {
+  final BorderSide? border;
+
+  ClipperBorderPainter({this.border});
+
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    Path path = Path();
+    path.moveTo(0, size.height);
+    path.lineTo(size.width / 2, size.height / 2);
+    path.lineTo(size.width, size.height);
+    if(border != null){
+      Paint paint = Paint()
+        ..style = PaintingStyle.stroke
+        ..strokeWidth =border!.width
+        ..color = border!.color;
+      canvas.drawPath(path, paint);
+    }
+  }
+
+  @override
+  bool shouldRepaint(CustomPainter oldDelegate) {
+    // TODO: implement shouldRepaint
     return true;
   }
 }
