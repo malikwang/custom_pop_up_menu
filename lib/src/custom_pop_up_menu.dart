@@ -108,7 +108,7 @@ class _CustomPopupMenuState extends State<CustomPopupMenu> {
               delegate: _MenuLayoutDelegate(
                 anchorSize: _childBox!.size,
                 anchorOffset: _childBox!.localToGlobal(
-                  Offset(-widget.horizontalMargin, -10),
+                  Offset(-widget.horizontalMargin, -13),
                 ),
                 verticalMargin: widget.verticalMargin,
                 position: widget.position,
