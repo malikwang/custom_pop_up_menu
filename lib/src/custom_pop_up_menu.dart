@@ -1,11 +1,29 @@
 import 'dart:math' as math;
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'platform/platform.dart';
 
 enum PressType {
   longPress,
   singleClick,
+  onMouseOver,
+}
+
+bool get _isWebOrDesktop {
+  if (defaultTargetPlatform == TargetPlatform.android) return false;
+  if (defaultTargetPlatform == TargetPlatform.iOS) return false;
+  return true;
+}
+
+extension PressTypeExt on PressType {
+  bool get canTap {
+    if (this == PressType.singleClick) return true;
+    if (this != PressType.onMouseOver) return false;
+    if (!_isWebOrDesktop) return false;
+    return true;
+  }
 }
 
 enum PreferredPosition {
@@ -49,6 +67,7 @@ class CustomPopupMenu extends StatefulWidget {
     this.position,
     this.menuOnChange,
     this.enablePassEvent = true,
+    this.mouseCursor,
   });
 
   final Widget child;
@@ -67,6 +86,9 @@ class CustomPopupMenu extends StatefulWidget {
   /// Pass tap event to the widgets below the mask.
   /// It only works when [barrierColor] is transparent.
   final bool enablePassEvent;
+
+  /// Show the cursor when [pressType] is [PressType.onMouseOver] in web or desktop.
+  final SystemMouseCursor? mouseCursor;
 
   @override
   _CustomPopupMenuState createState() => _CustomPopupMenuState();
@@ -210,7 +232,7 @@ class _CustomPopupMenuState extends State<CustomPopupMenu> {
 
   @override
   Widget build(BuildContext context) {
-    var child = Material(
+    Widget child = Material(
       child: InkWell(
         hoverColor: Colors.transparent,
         focusColor: Colors.transparent,
@@ -218,12 +240,12 @@ class _CustomPopupMenuState extends State<CustomPopupMenu> {
         highlightColor: Colors.transparent,
         child: widget.child,
         onTap: () {
-          if (widget.pressType == PressType.singleClick && _canResponse) {
+          if (widget.pressType.canTap && _canResponse) {
             _controller?.showMenu();
           }
         },
         onLongPress: () {
-          if (widget.pressType == PressType.longPress && _canResponse) {
+          if (widget.pressType.canTap && _canResponse) {
             _controller?.showMenu();
           }
         },
@@ -233,6 +255,17 @@ class _CustomPopupMenuState extends State<CustomPopupMenu> {
     if (Platform.isIOS) {
       return child;
     } else {
+      if (widget.pressType == PressType.onMouseOver && _isWebOrDesktop) {
+        child = MouseRegion(
+          onEnter: (value) {
+            if (_canResponse) _controller?.showMenu();
+          },
+          cursor: widget.mouseCursor == null
+              ? SystemMouseCursors.none
+              : widget.mouseCursor!,
+          child: child,
+        );
+      }
       return WillPopScope(
         onWillPop: () {
           _hideMenu();

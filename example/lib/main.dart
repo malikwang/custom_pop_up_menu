@@ -97,7 +97,7 @@ class _MyHomePageState extends State<MyHomePage> {
                           (item) => GestureDetector(
                             behavior: HitTestBehavior.translucent,
                             onTap: () {
-                              print("onTap");
+                              print("onTap ${item.title}");
                               _controller.hideMenu();
                             },
                             child: Container(
