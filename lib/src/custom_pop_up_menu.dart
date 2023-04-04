@@ -208,27 +208,16 @@ class _CustomPopupMenuState extends State<CustomPopupMenu> {
     super.dispose();
   }
 
+  void _onTap() {
+    if (_canResponse) _controller?.showMenu();
+  }
+
   @override
   Widget build(BuildContext context) {
-    var child = Material(
-      child: InkWell(
-        hoverColor: Colors.transparent,
-        focusColor: Colors.transparent,
-        splashColor: Colors.transparent,
-        highlightColor: Colors.transparent,
-        child: widget.child,
-        onTap: () {
-          if (widget.pressType == PressType.singleClick && _canResponse) {
-            _controller?.showMenu();
-          }
-        },
-        onLongPress: () {
-          if (widget.pressType == PressType.longPress && _canResponse) {
-            _controller?.showMenu();
-          }
-        },
-      ),
-      color: Colors.transparent,
+    var child = GestureDetector(
+      onTap: widget.pressType == PressType.singleClick ? _onTap : null,
+      onLongPress: widget.pressType == PressType.longPress ? _onTap : null,
+      child: widget.child,
     );
     if (Platform.isIOS) {
       return child;
